@@ -1,0 +1,98 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Project Implementation Steps\
+\
+**Azure Data Factory (ADF) Setup**\
+\
+1. **Resource Group Creation:**\
+   - Create a new resource group in the Azure portal to organize your project resources.\
+\
+2. **Storage Account Configuration:**\
+   - Create an Azure Data Lake Storage (ADLS) account within the resource group.\
+   - Enable the Hierarchical Namespace to support directory structures.\
+\
+3. **Storage Container Setup:**\
+   - Create the following containers in your ADLS account: `raw`, `bronze`, `silver`, `gold`.\
+\
+4. **ADF Resource Deployment:**\
+   - Deploy an Azure Data Factory (ADF) resource within your resource group.\
+\
+5. **Linked Service Configuration (HTTP):**\
+   - Create an HTTP linked service to connect to your external data source for raw data extraction.\
+\
+6. **Linked Service Configuration (Data Lake):**\
+   - Create a Data Lake linked service to connect ADF to your ADLS account for data storage.\
+\
+7. **Pipeline Development (Copy Activity):**\
+   - Navigate to the "Author" section, create a new pipeline, and drag a "Copy Activity" onto the canvas.\
+   - **Source Configuration:**\
+     - Configure the source dataset using the HTTP linked service.\
+     - Utilize advanced options to create dynamic parameters for file names in the relative URL.\
+   - **Sink Configuration:**\
+     - Configure the sink dataset using the Data Lake linked service, selecting the "bronze" folder.\
+     - Use advanced options to create dynamic parameters for `folder_name` and `file_name`.\
+\
+8. **Iteration with ForEach Activity:**\
+   - Create a "ForEach Activity" and define an array of `folder_names` and `file_names` in the pipeline parameters.\
+   - Cut and paste the "Copy Activity" inside the "ForEach Activity".\
+   - Configure the "Copy Activity" to use dynamic variables from the "ForEach" loop for `folder_name` and `file_name`.\
+\
+9. **Metadata Handling:**\
+   - Add a "Validation Activity" to validate data.\
+   - Add a "Web Activity" to fetch metadata.\
+   - Add a "Set Variable Activity" to store the metadata output for further processing.\
+\
+**Databricks Setup**\
+\
+1. **Databricks Account Creation:**\
+   - Create a Databricks account with a premium pricing tier.\
+\
+2. **Admin Console Connection:**\
+   - Connect to the Databricks admin console using your Microsoft Extra ID for authentication.\
+\
+3. **Metastore Creation:**\
+   - Create a metastore. Note that only one metastore per region is allowed.\
+\
+4. **Access Connector Configuration:**\
+   - Create an access connector to connect Databricks to your Data Lake Storage.\
+   - Assign the necessary IAM roles in the storage account and attach the access connector as a member.\
+\
+5. **Workspace Connection:**\
+   - Connect to your Azure Databricks workspace.\
+\
+6. **Catalog and External Storage Setup:**\
+   - Create a catalog and add external storage by attaching credentials using the access connector resource ID.\
+\
+**Databricks Workflow Implementation**\
+\
+**Key Study Point: Autoloader Schema Evolution**\
+\
+1. **Autoloader Notebook Creation:**\
+   - Create an autoloader notebook to automatically read cloud streams and write them into the bronze layer.\
+\
+2. **Silver Layer Notebook Development:**\
+   - Create a silver notebook to move data from the bronze layer to the silver layer.\
+   - Develop a lookup array notebook to dynamically fetch source and target `folder_name` (using `dbutils.widgets` and `taskValues`).\
+\
+3. **Workflow Iteration:**\
+   - Navigate to the "Workflows" section.\
+   - Create an iterative task for the silver notebook and use `taskValues` for iteration and parameter passing.\
+\
+4. **Lookup Task Implementation:**\
+   - Create a lookup task to pass folder names to the `silver_dim` notebooks.\
+\
+5. **Conditional Workflow for Netflix Titles:**\
+   - Create another workflow to run transformations on `netflix_titles` with a condition: execute only if `workDay` is 7.\
+\
+6. **Delta Live Tables (DLT) Pipeline:**\
+   - Create a Delta Live Tables (DLT) pipeline using job clusters instead of all-purpose clusters.\
+   - Define conditions and rules for gold layer data processing using DLT features.\
+\
+\
+\
+}
