@@ -1,0 +1,6 @@
+selected resource name:		pipeline1
+selected resource type:		pipeline
+factory name:			netflix-ankita-adf
+factory location:		centralindia
+subscription id:		5c51a581-2019-4768-9e65-b7ebcf9bc9cf
+time of download (UTC):		Sun, 09 Mar 2025 08:49:24 GMT

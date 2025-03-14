@@ -1,0 +1,31 @@
+{
+    "name": "Ds_github_netflix",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "Http_github_con_ls",
+            "type": "LinkedServiceReference"
+        },
+        "parameters": {
+            "file_name": {
+                "type": "string"
+            }
+        },
+        "annotations": [],
+        "type": "DelimitedText",
+        "typeProperties": {
+            "location": {
+                "type": "HttpServerLocation",
+                "relativeUrl": {
+                    "value": "AnkitaChouguleA/Netflix-Azure-End-To-End-Data-Engineering-Project/refs/heads/main/Datasets/@{dataset().file_name}",
+                    "type": "Expression"
+                }
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+        },
+        "schema": []
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}
